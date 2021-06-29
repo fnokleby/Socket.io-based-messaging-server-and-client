@@ -8,9 +8,19 @@
 
 <body>
     <ul id="messages"></ul>
-    <form action="">
-        <input id="m" autocomplete="off" /><button>Send</button>
+
+
+    <form action="" class="usernameForm">
+        <input placeholder="Username" id="u" autocomplete="off" style="width: 80%;" /><button style="width: 20%; ">Set</button>
     </form>
+
+
+    <form action="" class="messageForm">
+        <input placeholder="Message" id="m" autocomplete="off" style="width: 80%;" /><button>Send</button>
+    </form>
+
+
+
     <script src="./node_modules/socket.io-client/dist/socket.io.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
