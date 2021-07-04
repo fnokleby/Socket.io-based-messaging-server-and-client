@@ -17,6 +17,13 @@ io.on('connection', (socket) => {
     socket.on('chat message', (msg) => {
       io.emit('chat message', msg);
     });
+
+    socket.on('name change', (nameJson)=> {
+        let oldName = nameJson.oldName;
+        let newName = nameJson.newName;
+        console.log(oldName + " : " + newName)
+        io.emit('name change', nameJson);
+    });
 });
 
   

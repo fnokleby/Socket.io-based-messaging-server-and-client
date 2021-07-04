@@ -10,14 +10,15 @@
     <ul id="messages"></ul>
 
 
-    <form action="" class="usernameForm">
-        <input placeholder="Username" id="u" autocomplete="off" style="width: 100%;" />
+    <form action="" class="usernameForm" id="userForm">
+        <input placeholder="Username" id="u" autocomplete="off" style="width: 70%;" /><button
+            style="width: 30%;">Set</button>
     </form>
 
 
-    <form action="" class="messageForm">
+    <form action="" class="messageForm" id="msgForm">
         <input placeholder="Message" id="m" autocomplete="off" style="width: 70%;" /><button
-            style="width: 18%;">Send</button>
+            style="width: 12%;">Send</button>
     </form>
 
 
@@ -26,14 +27,16 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script>
         var socket = io('http://localhost:3000/');
+        var username = "Anonymous";
 
-        $('form').submit(function (e) {
+        $('#msgForm').submit(function (e) {
             e.preventDefault(); // prevents page reloading
-            let messageJson = { username: $('#u').val(), message: $('#m').val() }
+            let messageJson = { username: username, message: $('#m').val() }
             socket.emit('chat message', JSON.stringify(messageJson));
             $('#m').val('');
             return false;
         });
+
         socket.on('chat message', (msg) => {
             let msgParsed = JSON.parse(msg);
             let message = msgParsed.message;
@@ -42,6 +45,24 @@
             let messageComplete = "<li><b>" + username + ": </b>" + message + "</li>"
             console.log('message: ' + msgParsed);
             $('#messages').append(messageComplete);
+        });
+
+        socket.on('name change', (nameJson) => {
+            let oldName = nameJson.oldName;
+            let newName = nameJson.newName;
+
+            let messageComplete = "<li><b>" + "Server: </b>" + oldName + ' Changed their name to "' + newName + '" </b></li>'
+            console.log('message: ' + nameJson);
+            $('#messages').append(messageComplete);
+        })
+
+        $('#userForm').submit(function (e) {
+            e.preventDefault(); // prevents page reloading
+            let oldName = username;
+            let newName =  $('#u').val();
+            let nameJson = { oldName: oldName, newName: newName }
+            socket.emit('name change', (nameJson));
+            username = newName;
         });
     </script>
 </body>
