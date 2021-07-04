@@ -11,12 +11,13 @@
 
 
     <form action="" class="usernameForm">
-        <input placeholder="Username" id="u" autocomplete="off" style="width: 80%;" /><button style="width: 20%; ">Set</button>
+        <input placeholder="Username" id="u" autocomplete="off" style="width: 100%;" />
     </form>
 
 
     <form action="" class="messageForm">
-        <input placeholder="Message" id="m" autocomplete="off" style="width: 80%;" /><button>Send</button>
+        <input placeholder="Message" id="m" autocomplete="off" style="width: 70%;" /><button
+            style="width: 18%;">Send</button>
     </form>
 
 
@@ -28,13 +29,19 @@
 
         $('form').submit(function (e) {
             e.preventDefault(); // prevents page reloading
-            socket.emit('chat message', $('#m').val());
+            let messageJson = { username: $('#u').val(), message: $('#m').val() }
+            socket.emit('chat message', JSON.stringify(messageJson));
             $('#m').val('');
             return false;
         });
         socket.on('chat message', (msg) => {
-            console.log('message: ' + msg);
-            $('#messages').append($('<li>').text(msg));
+            let msgParsed = JSON.parse(msg);
+            let message = msgParsed.message;
+            let username = msgParsed.username;
+
+            let messageComplete = "<li><b>" + username + ": </b>" + message + "</li>"
+            console.log('message: ' + msgParsed);
+            $('#messages').append(messageComplete);
         });
     </script>
 </body>
